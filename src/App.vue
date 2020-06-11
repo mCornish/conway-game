@@ -1,22 +1,24 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    <ConwayGame v-bind:size="[10, 10]" />
   </div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
+import ConwayGame from "./components/ConwayGame.vue";
 
 export default {
   name: "App",
   components: {
-    HelloWorld
+    ConwayGame
   }
 };
 </script>
 
 <style lang="scss">
+body {
+  background-color: #fff0c8;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -24,5 +26,20 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+button {
+  background-color: #390f70;
+  border: none;
+  color: #fff0c8;
+  font-weight: bold;
+  padding: .5em 1em;
+  cursor: pointer;
+
+  &:hover {
+    color: white;
+  }
+}
+label {
+  font-weight: bold;
 }
 </style>
