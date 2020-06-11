@@ -1,4 +1,5 @@
 # conway-game
+[![Netlify Status](https://api.netlify.com/api/v1/badges/826b7e03-4d96-4952-a7ad-cc1f3f3a85f7/deploy-status)](https://app.netlify.com/sites/conway-game/deploys)
 
 ## Project setup
 ```
