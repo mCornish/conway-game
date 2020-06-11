@@ -4,11 +4,16 @@
     <label for="size-width">Width:</label>
     <input
       id="size-width"
-      @change="(e) => this.width = e.target.value"
+      @change="(e) => updateGrid(e.target.value, this.height)"
+      v-model.number="width"
+      type="number"
     />
     <label for="size-height">Height: </label>
     <input
       id="size-height"
+      @change="(e) => updateGrid(this.width, e.target.value)"
+      v-model.number="height"
+      type="number"
     />
   </div>
 
@@ -44,18 +49,24 @@ export default {
   name: "ConwayGame",
   components: { Cell },
   props: {
-    width: {
+    initialWidth: {
       type: Number,
       default: 10
     },
-    height: {
+    initialHeight: {
       type: Number,
       default: 10
     }
   },
-  data: () => ({
-    cells: []
-  }),
+  data() {
+    return {
+      cells: [],
+      height: this.initialHeight,
+      isPlaying: false,
+      width: this.initialWidth,
+
+    };
+  },
   created() {
     this.cells = Generation(this.width, this.height);
   },
@@ -67,15 +78,24 @@ export default {
       this.cells = nextGeneration(this.cells);
     },
     play() {
-
+      this.isPlaying = true;
+      this.playLoop();
+    },
+    playLoop() {
+      if (!this.isPlaying) return undefined;
+      this.cells = nextGeneration(this.cells);
+      setTimeout(this.playLoop, 1000);
     },
     stop() {
-
+      this.isPlaying = false;
     },
     updateCell(row, column, isAlive) {
       let newCells = [...this.cells];
       newCells[row][column] = Number(isAlive);
       this.cells = newCells;
+    },
+    updateGrid(width, height) {
+      this.cells = Generation(width, height);
     }
   }
 };

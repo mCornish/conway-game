@@ -1,6 +1,9 @@
 <template>
   <div id="app">
-    <ConwayGame v-bind:size="[10, 10]" />
+    <ConwayGame
+      :initial-width="50"
+      :initial-height="50"
+    />
   </div>
 </template>
 
