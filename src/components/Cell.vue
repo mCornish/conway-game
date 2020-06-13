@@ -1,6 +1,14 @@
 <template>
   <div
-    :class="`cell ${isAlive ? 'is-alive' : ''}`"
+    :class="{
+      cell: true,
+      'is-alive': isAlive
+    }"
+    :style="{
+      width,
+      height,
+      borderWidth: `${borderWidth}em`
+    }"
   ></div>
 </template>
 
@@ -8,9 +16,60 @@
 export default {
   name: "Cell",
   props: {
+    gridWidth: {
+      type: Number,
+      required: true
+    },
+    gridHeight: {
+      type: Number,
+      required: true
+    },
     isAlive: {
       type: Boolean,
       default: false
+    },
+  },
+  data() {
+    return {
+      isMounted: false,
+      // sizeString: '100%',
+      width: '100%',
+      height: '100%'
+    };
+  },
+  mounted() {
+    this.$nextTick(function () {
+      this.isMounted = true;
+    });
+  },
+  watch: {
+    gridWidth: 'updateWidth',
+    gridHeight: 'updateHeight'
+  },
+  computed: {
+    borderWidth() {
+      return 5 / Math.max(this.gridWidth, this.gridHeight);
+    },
+    // sizeString() {
+    //   if (!this.isMounted) return '100%';
+
+    //   const size = this.gridWidth < this.gridHeight ? this.$el.clientWidth : this.$el.clientHeight;
+    //   return `${size}px`;
+    // }
+  },
+  methods: {
+    updateWidth(newGridWidth) {
+      if (!this.isMounted) return undefined;
+
+      this.width = newGridWidth < this.gridHeight ?
+        `${this.$el.clientHeight}px` : '100%';
+    },
+    updateHeight(newGridHeight) {
+      if (!this.isMounted) return undefined;
+
+
+      this.height = newGridHeight < this.gridWidth ?
+        `${this.$el.clientWidth}px` : '100%';
     }
   }
 };
@@ -20,8 +79,9 @@ export default {
 <style scoped lang="scss">
 $color: #390f70;
 .cell {
-  width: 1em;
-  height: 1em;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
   border: .3em solid $color;
   border-radius: 50%;
   cursor: pointer;

@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <ConwayGame
+      class="ConwayGame"
       :initial-width="50"
       :initial-height="50"
     />
@@ -23,6 +24,8 @@ body {
   background-color: #fff0c8;
 }
 #app {
+  display: flex;
+  justify-content: center;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -44,5 +47,10 @@ button {
 }
 label {
   font-weight: bold;
+}
+
+.ConwayGame .grid-container {
+  width: 50em;
+  height: 50em;
 }
 </style>

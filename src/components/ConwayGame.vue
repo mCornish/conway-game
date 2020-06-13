@@ -1,40 +1,54 @@
 <template>
 <div class="container">
   <div class="size-control">
-    <label for="size-width">Width:</label>
+    <!-- <label for="size-width">Width:</label>
     <input
       id="size-width"
-      @change="(e) => updateGrid(e.target.value, this.height)"
-      v-model.number="width"
+      @change="(e) => setGridSize(e.target.value, height)"
+      :value="width"
       type="number"
-    />
-    <label for="size-height">Height: </label>
+      max="100"
+      min="0"
+    /> -->
+    <label for="size-height">Size: </label>
     <input
       id="size-height"
-      @change="(e) => updateGrid(this.width, e.target.value)"
-      v-model.number="height"
+      @change="(e) => setGridSize(e.target.value, e.target.value)"
+      :value="height"
       type="number"
+      max="100"
+      min="0"
     />
   </div>
 
-  <div class="grid">
+  <div class="grid-container" ref="grid">
     <div
-      v-for="(cellRow, row) in cells"
-      :key="row"
-      class="row"
+      class="grid"
+      :style="{
+        gridTemplateRows: `repeat(${cells.length}, 1fr)`,
+        gridTemplateColumns: `repeat(${cells[0].length}, 1fr)`,
+        gridGap: `${5 / Math.min(width, height)}em`
+      }"
     >
-      <Cell
-        v-for="(isAlive, column) in cellRow"
-        :key="column"
-        :is-alive="!!isAlive"
-        @click.native="() => updateCell(row, column, !isAlive)"
-      />
+      <template
+        v-for="(cellRow, row) in cells"
+      >
+        <Cell
+          v-for="(isAlive, column) in cellRow"
+          :key="`${row}-${column}`"
+          :grid-width="Number(width)"
+          :grid-height="Number(height)"
+          :is-alive="!!isAlive"
+          @click.native="() => updateCell(row, column, !isAlive)"
+        />
+      </template>
     </div>
   </div>
 
   <div class="buttons">
     <button @click="nextGeneration">Next</button>
     <button @click="clear">Clear</button>
+    <button @click="random">Random</button>
     <button @click="play">Play</button>
     <button @click="stop">Stop</button>
   </div>
@@ -64,7 +78,6 @@ export default {
       height: this.initialHeight,
       isPlaying: false,
       width: this.initialWidth,
-
     };
   },
   created() {
@@ -86,6 +99,14 @@ export default {
       this.cells = nextGeneration(this.cells);
       setTimeout(this.playLoop, 1000);
     },
+    random() {
+      this.cells = this.cells.map(cellRow => cellRow.map(randomIsAlive))
+    },
+    setGridSize(width, height) {
+      this.updateGrid(width, height);
+      this.width = width;
+      this.height = height;
+    },
     stop() {
       this.isPlaying = false;
     },
@@ -99,6 +120,11 @@ export default {
     }
   }
 };
+
+function randomIsAlive() {
+  return Number(Math.random() > .5);
+}
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -119,18 +145,12 @@ export default {
   }
 }
 .grid {
-  display: flex;
-  flex-direction: column;
-
-  > * + * {
-    margin-top: .2em;
-  }
+  display: grid;
+  width: 100%;
+  height: 100%;
 }
 .row {
   display: flex;
-
-  > * + * {
-    margin-left: .2em;
-  }
+  width: 100%;
 }
 </style>
