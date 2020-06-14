@@ -2,8 +2,7 @@
   <div id="app">
     <ConwayGame
       class="ConwayGame"
-      :initial-width="50"
-      :initial-height="50"
+      :initial-size="30"
     />
   </div>
 </template>
@@ -49,7 +48,7 @@ label {
   font-weight: bold;
 }
 
-.ConwayGame .grid-container {
+.ConwayGame .grid {
   width: 50em;
   height: 50em;
 }

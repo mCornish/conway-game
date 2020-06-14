@@ -1,73 +1,41 @@
 <template>
 <div class="container">
   <div class="size-control">
-    <!-- <label for="size-width">Width:</label>
+    <label for="size-control">Size: </label>
     <input
-      id="size-width"
-      @change="(e) => setGridSize(e.target.value, height)"
-      :value="width"
-      type="number"
-      max="100"
-      min="0"
-    /> -->
-    <label for="size-height">Size: </label>
-    <input
-      id="size-height"
-      @change="(e) => setGridSize(e.target.value, e.target.value)"
-      :value="height"
+      id="size-control"
+      v-model.number="size"
       type="number"
       max="100"
       min="0"
     />
   </div>
 
-  <div class="grid-container" ref="grid">
-    <div
-      class="grid"
-      :style="{
-        gridTemplateRows: `repeat(${cells.length}, 1fr)`,
-        gridTemplateColumns: `repeat(${cells[0].length}, 1fr)`,
-        gridGap: `${5 / Math.min(width, height)}em`
-      }"
-    >
-      <template
-        v-for="(cellRow, row) in cells"
-      >
-        <Cell
-          v-for="(isAlive, column) in cellRow"
-          :key="`${row}-${column}`"
-          :grid-width="Number(width)"
-          :grid-height="Number(height)"
-          :is-alive="!!isAlive"
-          @click.native="() => updateCell(row, column, !isAlive)"
-        />
-      </template>
-    </div>
-  </div>
+  <MatrixGrid
+    :matrix="cells"
+  />
 
   <div class="buttons">
     <button @click="nextGeneration">Next</button>
     <button @click="clear">Clear</button>
     <button @click="random">Random</button>
-    <button @click="play">Play</button>
-    <button @click="stop">Stop</button>
+    <button
+      @click="isPlaying ? stop() : play()"
+    >{{isPlaying ? 'Stop' : 'Play'}}</button>
   </div>
 </div>
 </template>
 
 <script>
-import Cell from './Cell';
+import { debounce as _debounce } from 'lodash';
+import MatrixGrid from './MatrixGrid';
 import { Generation, nextGeneration } from '../game';
 
 export default {
-  name: "ConwayGame",
-  components: { Cell },
+  name: 'ConwayGame',
+  components: { MatrixGrid },
   props: {
-    initialWidth: {
-      type: Number,
-      default: 10
-    },
-    initialHeight: {
+    initialSize: {
       type: Number,
       default: 10
     }
@@ -75,19 +43,26 @@ export default {
   data() {
     return {
       cells: [],
-      height: this.initialHeight,
       isPlaying: false,
-      width: this.initialWidth,
+      size: this.initialSize,
     };
   },
   created() {
-    this.cells = Generation(this.width, this.height);
+    this.cells = Generation(this.size, this.size);
+  },
+  watch: {
+    size(newSize) {
+      console.log("size -> newSize", Number(newSize))
+      this.setGridSize(Number(newSize))
+    }
   },
   methods: {
     clear() {
-      this.cells = Generation(this.width, this.height);
+      this.isPlaying = false;
+      this.cells = Generation(this.size, this.size);
     },
     nextGeneration() {
+      this.isPlaying = false;
       this.cells = nextGeneration(this.cells);
     },
     play() {
@@ -102,11 +77,10 @@ export default {
     random() {
       this.cells = this.cells.map(cellRow => cellRow.map(randomIsAlive))
     },
-    setGridSize(width, height) {
-      this.updateGrid(width, height);
-      this.width = width;
-      this.height = height;
-    },
+    setGridSize: _debounce(function(size) {
+      this.updateGrid(size);
+      this.size = size;
+    }, 200),
     stop() {
       this.isPlaying = false;
     },
@@ -115,8 +89,8 @@ export default {
       newCells[row][column] = Number(isAlive);
       this.cells = newCells;
     },
-    updateGrid(width, height) {
-      this.cells = Generation(width, height);
+    updateGrid(size) {
+      this.cells = Generation(size, size);
     }
   }
 };
@@ -124,7 +98,6 @@ export default {
 function randomIsAlive() {
   return Number(Math.random() > .5);
 }
-
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -143,14 +116,5 @@ function randomIsAlive() {
   > * + * {
     margin-left: 1em;
   }
-}
-.grid {
-  display: grid;
-  width: 100%;
-  height: 100%;
-}
-.row {
-  display: flex;
-  width: 100%;
 }
 </style>

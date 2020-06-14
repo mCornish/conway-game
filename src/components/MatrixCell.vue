@@ -14,7 +14,7 @@
 
 <script>
 export default {
-  name: "Cell",
+  name: 'GridCell',
   props: {
     gridWidth: {
       type: Number,
