@@ -37,25 +37,19 @@ export default {
       height: '100%'
     };
   },
-  mounted() {
-    this.$nextTick(function () {
-      this.isMounted = true;
-    });
+  computed: {
+    borderWidth() {
+      return 5 / Math.max(this.gridWidth, this.gridHeight);
+    },
   },
   watch: {
     gridWidth: 'updateWidth',
     gridHeight: 'updateHeight'
   },
-  computed: {
-    borderWidth() {
-      return 5 / Math.max(this.gridWidth, this.gridHeight);
-    },
-    // sizeString() {
-    //   if (!this.isMounted) return '100%';
-
-    //   const size = this.gridWidth < this.gridHeight ? this.$el.clientWidth : this.$el.clientHeight;
-    //   return `${size}px`;
-    // }
+  mounted() {
+    this.$nextTick(function () {
+      this.isMounted = true;
+    });
   },
   methods: {
     updateWidth(newGridWidth) {
@@ -66,7 +60,6 @@ export default {
     },
     updateHeight(newGridHeight) {
       if (!this.isMounted) return undefined;
-
 
       this.height = newGridHeight < this.gridWidth ?
         `${this.$el.clientWidth}px` : '100%';

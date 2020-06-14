@@ -47,14 +47,14 @@ export default {
       size: this.initialSize,
     };
   },
-  created() {
-    this.cells = Generation(this.size, this.size);
-  },
   watch: {
     size(newSize) {
       console.log("size -> newSize", Number(newSize))
       this.setGridSize(Number(newSize))
     }
+  },
+  created() {
+    this.cells = Generation(this.size, this.size);
   },
   methods: {
     clear() {
