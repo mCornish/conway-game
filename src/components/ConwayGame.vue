@@ -13,6 +13,7 @@
 
   <MatrixGrid
     :matrix="cells"
+    :on-click="updateCell"
   />
 
   <div class="buttons">

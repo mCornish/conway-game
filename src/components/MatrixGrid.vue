@@ -16,7 +16,7 @@
       :grid-width="Number(width)"
       :grid-height="Number(height)"
       :is-alive="!!isAlive"
-      @click.native="() => updateCell(row, column, !isAlive)"
+      @click.native="() => onClick(row, column, !isAlive)"
     />
   </template>
 </div>
@@ -36,6 +36,10 @@ export default {
       validator(value) {
         return value.every(row => row.every(n => n === 0 || n === 1));
       }
+    },
+    onClick: {
+      type: Function,
+      default: () => {}
     }
   },
   computed: {
