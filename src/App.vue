@@ -49,7 +49,7 @@ label {
 }
 
 .ConwayGame .grid {
-  width: 50em;
-  height: 50em;
+  width: 80vmin;
+  height: 80vmin;
 }
 </style>
